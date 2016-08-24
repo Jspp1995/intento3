@@ -1,0 +1,217 @@
+const int leftF=8;
+const int leftB=9;
+const int rightF=10;
+const int rightB=11;
+const int light1=3;
+const int light2=7;
+
+
+char direction=' ';
+bool directioned=false;
+
+void setup() {
+  Serial.begin(9600);  //Iniciando la comunicacion  con el serial,  9600 es la frecuencia recomendada para no forzar 
+  pinMode(leftF, OUTPUT);
+  pinMode(leftB, OUTPUT);
+  pinMode(rightF, OUTPUT);
+  pinMode(rightB,OUTPUT);
+  pinMode(6,OUTPUT);
+  pinMode(light1,OUTPUT);
+
+  sendDirection('0' );
+  
+  
+  
+  
+
+}
+
+void loop() {
+ 
+  
+
+  
+ 
+  
+  char command= ' '; //
+
+
+  
+  sendDirection(direction);
+  delay(25);
+  
+  if(Serial.available() < 1){
+    digitalWrite(6,LOW);
+    return;
+  }
+
+  digitalWrite(6,HIGH);
+
+
+  if(directioned){
+    
+    command= Serial.read();
+    
+    if(command>47 && command<58){
+      direction= command;
+     
+      directioned=false;
+           
+    }
+    
+    return;
+  }
+
+  command = Serial.read();
+
+  switch(command){
+    case '*':
+      directioned=true;
+     
+      
+     
+      return;
+      break;
+    
+    case 'G':
+      break;
+
+    case 'g':
+      break;
+ 
+    case 'b':
+      break;
+     
+    case 'B':
+      break;
+   
+    case 'd':
+      digitalWrite(light1,LOW);
+      break;
+    case 'D':
+      digitalWrite(light1,HIGH);
+      break;
+    default:
+      break;
+     
+      
+      
+  }
+
+  
+  
+
+
+  
+
+  
+  
+}
+
+
+void setOffAll(){
+      digital_Write(leftF,LOW);
+      digital_Write(leftB,LOW);
+      digital_Write(rightF,LOW);
+      digital_Write(rightB,LOW);
+}
+
+void sendDirection(char dir){
+  switch(dir){
+    case '0': //LOS DOS LADOS ESTATICOS, SIN MOVIMIENTO
+      setOffAll();
+      break;
+    
+
+    case '1'://AMBOS LADOS SE MUEVEN HACIA ADELANTE
+
+      analogWrite(leftF,255);
+      analogWrite(leftB,0);
+      analogWrite(rightF,255);
+      analogWrite(rightB,0);
+      
+      break;
+
+
+    case '2': //GIRA SOBRE SU EJE HACIA LA DERECHA:  IZQ->ADELANTE   DERECHA->ATRAS
+      analogWrite(leftF,255);
+      analogWrite(leftB,0);
+      analogWrite(rightF,0);
+      analogWrite(rightB,255);
+     
+    break;
+
+    case '3': //AMBOS LADOS SE MUEVEN HACIA ATRAS
+      analogWrite(leftF,0);
+      analogWrite(leftB,255);
+      analogWrite(rightF,0);
+      analogWrite(rightB,255);
+      
+
+    break;
+    case '4'://GIRA SOBRE SU EJE HACIA LA IZQUIERDA: IZQ->ATRAS  DERECHA-> ADELANTE
+
+      analogWrite(leftF,0);
+      analogWrite(leftB,255);
+      analogWrite(rightF,255);
+      analogWrite(rightB,0);
+      
+
+    break;
+
+    case '5':
+      
+      analogWrite(leftF,255);
+      analogWrite(leftB,0);
+      analogWrite(rightF,0);
+      analogWrite(rightB,0);
+      
+
+    break;
+
+    case '6':
+      analogWrite(leftF,0);
+      analogWrite(leftB,0);
+      analogWrite(rightF,0);
+      analogWrite(rightB,255);
+      
+
+    break;
+
+    case '7':
+
+      analogWrite(leftF,0);
+      analogWrite(leftB,255);
+      analogWrite(rightF,0);
+      analogWrite(rightB,0);
+      
+
+      break;
+
+    case '8':
+      analogWrite(leftF,0);
+      analogWrite(leftB,0);
+      analogWrite(rightF,255);
+      analogWrite(rightB,0);
+      
+
+    break;
+    
+    default:
+
+    break;
+      
+      
+  
+  }
+
+
+}
+
+
+
+
+void digital_Write( int pin, int state){
+  digitalWrite(pin, state);
+
+}
